@@ -1,0 +1,8 @@
+<mat-form-field appearance="outline">
+  <mat-label>Status</mat-label>
+  <mat-select [value]="selected" (selectionChange)="emitChange($event.value)">
+    <mat-option value="USD">USD</mat-option>
+    <mat-option value="EUR">EUR</mat-option>
+    <mat-option value="GBP">GBP</mat-option>
+  </mat-select>
+</mat-form-field>

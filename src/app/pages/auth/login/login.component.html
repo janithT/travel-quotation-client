@@ -1,0 +1,43 @@
+<!-- Material ui -->
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-title class="mat-card-title">
+      {{ config.appName }}
+    </mat-card-title>
+
+    <mat-card-content class="text-center">
+      <span class="text-lg font-medium">Login</span>
+    </mat-card-content>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-10">
+      <!-- Email Field -->
+      <app-mat-input-field
+        [control]="getControl('email')"
+        label="Email"
+        [type]="'email'"
+        [placeholder]="'email'"
+      ></app-mat-input-field>
+
+      <!-- Password Field -->
+      <app-mat-input-field
+        [control]="getControl('password')"
+        label="Password"
+        [type]="'password'"
+        [placeholder]="'password'"
+      ></app-mat-input-field>
+
+      <!-- Submit Button -->
+      <app-mat-button
+        text="Login"
+        color="primary"
+        [disabled]="loginForm.invalid"
+        [loading]="loading"
+        class="full-width"
+      ></app-mat-button>
+    </form>
+
+    <div>
+      <a color="info" routerLink="#">Reset password</a>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,147 @@
+<div class="p-4">
+  <form
+    [formGroup]="quotationForm"
+    (ngSubmit)="submitQuot()"
+    class="flex items-center gap-4 flex-wrap mb-4"
+  >
+    <h3>Make Quotation</h3>
+
+    <br />
+
+    <!-- for date range picker -->
+    <div class="form-row" style="display: flex; gap: 16px; width: 100%">
+      <!-- daterange picker -->
+      <div style="flex: 2">
+        <label for="startDate" class="mb-4">Pick your travel duration :</label>
+        <app-mat-date-range-field
+          startControlName="start_date"
+          endControlName="end_date"
+          label="Travel Duration"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+        >
+        </app-mat-date-range-field>
+        <!-- start date errors -->
+        <div
+          class="error mb-4"
+          *ngIf="
+            quotationForm.get('start_date')?.touched &&
+            quotationForm.get('start_date')?.errors
+          "
+        >
+          <small *ngIf="quotationForm.get('start_date')?.hasError('required')"
+            >Start date is required and must be a valid date.</small
+          >
+          <small
+            *ngIf="
+              quotationForm.get('start_date')?.hasError('invalidStartDate')
+            "
+            >Start date must be a valid date.</small
+          >
+        </div>
+        <!-- end date errors -->
+        <div
+          class="error mb-4"
+          *ngIf="
+            quotationForm.get('end_date')?.touched &&
+            quotationForm.get('end_date')?.errors
+          "
+        >
+          <small *ngIf="quotationForm.get('end_date')?.hasError('required')"
+            >End date is requiredand must be a valid date.</small
+          >
+          <small
+            *ngIf="quotationForm.get('end_date')?.hasError('invalidEndDate')"
+            >End date must be a valid date.</small
+          >
+        </div>
+        <!-- date range errors -->
+        <div class="error" *ngIf="quotationForm.errors?.['dateRangeInvalid']">
+          <small>End date must be greater than or equal to Start date.</small>
+        </div>
+      </div>
+
+      <div style="flex: 1">
+        <label for="startDate" class="mb-4">Select the currency :</label>
+        <app-status-filter
+          [selected]="currency_id"
+          (statusChanged)="onStatusChanged($event)"
+        >
+        </app-status-filter>
+      </div>
+    </div>
+
+    <!-- for date of birth picker -->
+    <div
+      formArrayName="travellers"
+      class="form-row"
+      style="display: flex; gap: 16px; width: 50%"
+    >
+      <div
+        *ngFor="let traveller of travellers.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <app-mat-datepicker-field
+          formControlName="age"
+          [label]="'Traveller ' + (i + 1) + ' - Date of Birth'"
+          placeholder="Enter DOB"
+          [minDate]="dobminDate"
+          [maxDate]="dobmaxDate"
+        ></app-mat-datepicker-field>
+
+        <div
+          class="error"
+          *ngIf="traveller.get('age')?.touched && traveller.get('age')?.errors"
+        >
+          <small *ngIf="traveller.get('age')?.hasError('required')">
+            Correct date of birth is required.
+          </small>
+          <small *ngIf="traveller.get('age')?.hasError('invalidDate')">
+            Invalid date of birth.
+          </small>
+        </div>
+        <!-- for laravel errors -->
+         <div
+            class="error"
+            *ngIf="
+              traveller.get('age')?.touched && traveller.get('age')?.hasError('server')
+            "
+          >
+            <small>{{ traveller.get('age')?.getError('server') }}</small>
+          </div>
+
+        <button
+          mat-icon-button
+          color="warn"
+          type="button"
+          (click)="removeTraveller(i)"
+          *ngIf="travellers.length > 1"
+        >
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Add Traveller Button -->
+    <button mat-stroked-button type="button" (click)="addTraveller()">
+      <mat-icon>add</mat-icon> Add Traveller
+    </button>
+
+    <div *ngIf="total && currency" class="mt-4" style="background-color: aqua;">
+      <strong>Total:</strong>
+      {{ total }} {{ currency_id }}
+    </div>
+
+    <!-- Submit Button -->
+    <div style="display: flex; justify-content: flex-end; margin-top: 16px">
+      <app-mat-button
+        [text]="creating ? 'Please wait...' : 'Create Quotation'"
+        [loading]="creating"
+        [disabled]="quotationForm.invalid || creating"
+        [type]="'submit'"
+        [color]="'info'"
+        class="w-40"
+      ></app-mat-button>
+    </div>
+  </form>
+</div>
