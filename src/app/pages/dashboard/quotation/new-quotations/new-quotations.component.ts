@@ -8,7 +8,6 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/services/notification.service';
 import { QuotationService } from 'src/app/services/quotation.service';
 import { formatDate } from '@angular/common';
@@ -38,7 +37,6 @@ export class NewQuotationsComponent {
   constructor(
     private fb: FormBuilder,
     private quotationService: QuotationService,
-    private router: Router,
     private notificationService: NotificationService
   ) {
     this.minDate = new Date();
@@ -137,26 +135,26 @@ export class NewQuotationsComponent {
       end_date: this.formatToYMD(rawFormData.end_date),
       currency_id: this.currency_id,
       age: rawFormData.travellers
-        .map((years: any) => this.calculateAge(years.age, startDate)) // in here im calculating age based on travel days make a list
-        .join(','),
+        .map((years: any) => this.calculateAge(years.age, startDate)).join(','),
+        // in here, im calculating age based on travel start date make a list
+        
     };
   }
 
-  // Create quotation
+  // Submit quotation
   submitQuot(): void {
-    this.loading = true;
-    this.creating = true;
+    this.loading = this.creating = true;
 
     const rawFormData = this.quotationForm.value;
     const startDate = new Date(rawFormData.start_date);
 
-    const formattedPayload = this.buildFormattedPayload(this.quotationForm.value, startDate);
+    const formattedPayload = this.buildFormattedPayload(rawFormData, startDate);
 
     this.quotationService.createQuotation(formattedPayload).subscribe({
       next: (response: any) => {
-        this.quotationForm.reset();
-        this.loading = false;
-        this.creating = false;
+        // this.quotationForm.reset();
+        this.loading = this.creating = false;
+
         if (response.status == 'success') {
           this.total = response.data.total;
           this.currency = response.data.currency_id;
@@ -166,16 +164,13 @@ export class NewQuotationsComponent {
         }
       },
       error: (err) => {
+        this.loading = this.creating = false;
         if (err?.error?.errors) {
           // Laravel validation errors
           this.handleApiValidationErrors(err?.error?.errors);
-          this.loading = false;
-          this.creating = false;
         } else {
           // Generic error
           this.errorMessage = err?.error?.message || 'Create quotation failed';
-          this.loading = false;
-          this.creating = false;
           this.notificationService.show(
             err?.error?.message || 'Create quotation failed.',
             'error'
