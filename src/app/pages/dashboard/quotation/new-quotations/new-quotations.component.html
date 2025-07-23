@@ -4,7 +4,7 @@
     (ngSubmit)="submitQuot()"
     class="flex items-center gap-4 flex-wrap mb-4"
   >
-    <h3>Make Quotation</h3>
+    <h3>Make Your Travel Plan Today ✈️ </h3>
 
     <br />
 
@@ -123,8 +123,8 @@
     </div>
 
     <!-- Add Traveller Button -->
-    <button mat-stroked-button type="button" (click)="addTraveller()">
-      <mat-icon>add</mat-icon> Add Traveller
+    <button mat-icon-button type="button" color="green" (click)="addTraveller()">
+      <mat-icon>add_circle</mat-icon>
     </button>
 
     <div *ngIf="total && currency" class="mt-4" style="background-color: aqua;">
@@ -135,7 +135,7 @@
     <!-- Submit Button -->
     <div style="display: flex; justify-content: flex-end; margin-top: 16px">
       <app-mat-button
-        [text]="creating ? 'Please wait...' : 'Create Quotation'"
+        [text]="creating ? 'Please wait...' : 'Make it now'"
         [loading]="creating"
         [disabled]="quotationForm.invalid || creating"
         [type]="'submit'"
