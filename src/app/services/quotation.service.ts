@@ -14,6 +14,11 @@ export class QuotationService {
 
   constructor(private http: HttpClient) {}
 
+  // get my quotations 
+  getQuotation(params: any): Observable<ApiResponse<Quotations>> {
+    return this.http.get<any>(`${this.apiUrl}/quotation`, {params});
+  }
+
   // create new quotations
   createQuotation(data: Quotations): Observable<ApiResponse<Quotations>> {
     return this.http.post<any>(`${this.apiUrl}/quotation`, data);

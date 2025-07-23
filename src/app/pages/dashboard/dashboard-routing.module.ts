@@ -11,7 +11,7 @@ const routes: Routes = [
     path: '',
     children: [
       { path: 'home', component: HomeComponent },
-      // { path: 'quotations', component: MyQuotationsComponent },
+      { path: 'quotations', component: MyQuotationsComponent },
       { path: 'quotations/create', component: NewQuotationsComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
